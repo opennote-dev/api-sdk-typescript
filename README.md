@@ -11,7 +11,7 @@ npm/bun/pnpm/yarn install opennote
 ## Usage
 
 ```typescript
-import { OpennoteVideoClient } from "opennote";
+import { OpennoteVideoClient } from "@opennote-ed/video-client";
 
 const client = new OpennoteVideoClient({ apiKey: "your_api_key" });
 
