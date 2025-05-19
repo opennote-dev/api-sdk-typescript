@@ -1,6 +1,6 @@
 {
   "name": "@opennote-ed/video-client",
-  "version": "1.0.1",
+  "version": "1.0.1r1",
   "description": "Opennote TypeScript SDK",
   "main": "src/index.ts",
   "scripts": {

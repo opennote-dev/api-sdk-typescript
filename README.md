@@ -15,7 +15,7 @@ import { OpennoteVideoClient } from "opennote";
 
 const client = new OpennoteVideoClient({ apiKey: "your_api_key" });
 
-# Create a video
+// Create a video
 const video = await client.video.create({
     sections: 5,
     model: "feynman2",
