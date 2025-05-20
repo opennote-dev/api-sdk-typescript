@@ -16,10 +16,15 @@ type VideoCreateResponse = {
 
 // VIDEO STATUS TYPES 
 
+type Source = {
+    url: string; 
+    content: string;
+}
+
 type VideoAPIResponseData = {
     video_url: string
     transcript: string
-    sources: string[]
+    sources: Source[]
 }
 
 type OpennoteUsage = {
