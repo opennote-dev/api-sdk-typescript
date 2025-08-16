@@ -1,54 +1,146 @@
-import type { VideoCreateRequestOptions, VideoCreateResponse, VideoStatusAPIResponse } from "./api_types";
+import {
+  VideoCreateJobRequest,
+  VideoCreateJobResponse,
+  VideoJobStatusResponse,
+  JournalsResponse,
+  JournalContentResponse,
+  VideoAPIRequestMessage,
+  OPENNOTE_BASE_URL
+} from './api_types';
+import { BaseClient } from './base_client';
 
-const OPENNOTE_BASE_URL = "https://api-video.opennote.me";
+export class Video {
+  constructor(private client: OpennoteClient) {}
 
-class VideoClient {
-    constructor(private readonly apiKey: string, private readonly baseUrl: string = OPENNOTE_BASE_URL) {}
+  async create(params: {
+    messages?: VideoAPIRequestMessage[];
+    model?: string;
+    include_sources?: boolean;
+    search_for?: string;
+    source_count?: number;
+    length?: number;
+    script?: string;
+    upload_to_s3?: boolean;
+    no_cache?: boolean;
+    title?: string;
+  }): Promise<VideoCreateJobResponse> {
+    const request: VideoCreateJobRequest = {
+      model: params.model || 'picasso',
+      messages: params.messages,
+      include_sources: params.include_sources || false,
+      search_for: params.search_for,
+      source_count: params.source_count || 3,
+      length: params.length || 3,
+      script: params.script,
+      upload_to_s3: params.upload_to_s3 || false,
+      no_cache: params.no_cache || true,
+      title: params.title || '',
+    };
 
-    async make({
-        sections = 5,
-        model = "feynman2",
-        messages,
-        script,
-    }: VideoCreateRequestOptions): Promise<VideoCreateResponse> {
-        if (!messages && !script) {
-            throw new Error("Either messages or script must be provided");
-        }
+    return this.client.request<VideoCreateJobResponse>(
+      'POST',
+      '/v1/video/create',
+      { body: JSON.stringify(request) }
+    );
+  }
 
-        const response = await fetch(`${this.baseUrl}/video/make`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${this.apiKey}`,
-            },
-            body: JSON.stringify({
-                sections,
-                model,
-                messages,
-                script,
-            }),
-        });
-
-        return response.json();
+  async status(videoId: string): Promise<VideoJobStatusResponse> {
+    if (!videoId) {
+      throw new Error('video_id must be provided');
     }
 
-    async status(videoId: string): Promise<VideoStatusAPIResponse> {
-        const response = await fetch(`${this.baseUrl}/video/status/${videoId}`);
-        return response.json();
-    }
+    return this.client.request<VideoJobStatusResponse>(
+      'GET',
+      `/v1/video/status/${videoId}`
+    );
+  }
 }
 
-class OpennoteVideoClient {
-    video: VideoClient;
+export class Journals {
+  constructor(private client: OpennoteClient) {}
 
-    constructor(apiKey: string, baseUrl: string = OPENNOTE_BASE_URL) {
-        if (!apiKey) {
-            throw new Error("API key is required");
-        }
-
-        this.video = new VideoClient(apiKey, baseUrl);
+  async list(pageToken?: number): Promise<JournalsResponse> {
+    const params = new URLSearchParams();
+    if (pageToken !== undefined) {
+      params.append('page_token', pageToken.toString());
     }
+
+    const queryString = params.toString();
+    const path = queryString ? `/v1/journals/list?${queryString}` : '/v1/journals/list';
+
+    return this.client.request<JournalsResponse>('GET', path);
+  }
+
+  async content(journalId: string): Promise<JournalContentResponse> {
+    if (!journalId) {
+      throw new Error('journal_id must be provided');
+    }
+
+    return this.client.request<JournalContentResponse>(
+      'GET',
+      `/v1/journals/content/${journalId}`
+    );
+  }
 }
 
-export { OpennoteVideoClient };
+export class OpennoteClient extends BaseClient {
+  public video: Video;
+  public journals: Journals;
 
+  constructor(
+    apiKey: string,
+    baseUrl: string = OPENNOTE_BASE_URL,
+    timeout: number = 60000,
+    maxRetries: number = 3
+  ) {
+    super(apiKey, baseUrl, timeout, maxRetries);
+    this.video = new Video(this);
+    this.journals = new Journals(this);
+  }
+
+  async request<T>(
+    method: string,
+    path: string,
+    options?: RequestInit
+  ): Promise<T> {
+    const url = `${this.baseUrl}${path}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        method,
+        headers: {
+          ...this.getHeaders(),
+          ...(options?.headers || {})
+        },
+        signal: controller.signal
+      });
+
+      return this.processResponse<T>(response);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async health(): Promise<{ status: string }> {
+    return this.request<{ status: string }>('GET', '/v1/health');
+  }
+}
+
+// Export all types
+export * from './api_types';
+// Export errors with renamed ValidationError to avoid conflict
+export {
+  OpennoteAPIError,
+  AuthenticationError,
+  InsufficientCreditsError,
+  ValidationError as OpennoteValidationError,
+  RateLimitError,
+  ServerError,
+  BaseClient
+} from './base_client';
+
+// For backward compatibility
+export const OpennoteVideoClient = OpennoteClient;
