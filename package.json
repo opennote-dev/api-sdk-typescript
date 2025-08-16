@@ -1,11 +1,17 @@
 {
-  "name": "@opennote-ed/video-client",
-  "version": "1.0.2",
+  "name": "@opennote-ed/sdk",
+  "version": "2.0.0",
   "description": "Opennote TypeScript SDK",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc",
     "test": "bun test",
-    "test:npm": "npm test"
+    "test:npm": "npm test",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,12 +29,11 @@
   },
   "homepage": "https://github.com/opennote-dev/api-sdk-typescript#readme",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "@opennote-ed/video-client": "^1.0.0"
   }
 }
