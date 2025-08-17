@@ -5,7 +5,8 @@ import {
   JournalsResponse,
   JournalContentResponse,
   VideoAPIRequestMessage,
-  OPENNOTE_BASE_URL
+  OPENNOTE_BASE_URL,
+  ModelChoices
 } from './api_types';
 import { BaseClient } from './base_client';
 
@@ -14,14 +15,13 @@ export class Video {
 
   async create(params: {
     messages?: VideoAPIRequestMessage[];
-    model?: string;
+    model?: ModelChoices;
     include_sources?: boolean;
     search_for?: string;
     source_count?: number;
     length?: number;
     script?: string;
     upload_to_s3?: boolean;
-    no_cache?: boolean;
     title?: string;
   }): Promise<VideoCreateJobResponse> {
     const request: VideoCreateJobRequest = {
@@ -33,7 +33,6 @@ export class Video {
       length: params.length || 3,
       script: params.script,
       upload_to_s3: params.upload_to_s3 || false,
-      no_cache: params.no_cache || true,
       title: params.title || '',
     };
 

@@ -20,7 +20,7 @@ export interface VideoAPIRequestMessage {
 }
 
 export interface VideoCreateJobRequest {
-  model?: string;
+  model?: ModelChoices;
   messages?: VideoAPIRequestMessage[];
   include_sources?: boolean;
   search_for?: string;
@@ -28,7 +28,6 @@ export interface VideoCreateJobRequest {
   length?: number;
   script?: string;
   upload_to_s3?: boolean;
-  no_cache?: boolean;
   title?: string;
 }
 
@@ -52,7 +51,7 @@ export interface VideoResponse {
   transcript?: string;
   sources?: VideoSource[];
   cost?: number;
-  model?: string;
+  model?: ModelChoices;
   timestamp?: string;
 }
 
