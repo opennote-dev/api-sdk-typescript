@@ -23,6 +23,7 @@ export class Video {
     script?: string;
     upload_to_s3?: boolean;
     title?: string;
+    webhook_url?: string;
   }): Promise<VideoCreateJobResponse> {
     const request: VideoCreateJobRequest = {
       model: params.model || 'picasso',
@@ -34,6 +35,7 @@ export class Video {
       script: params.script,
       upload_to_s3: params.upload_to_s3 || false,
       title: params.title || '',
+      webhook_url: params.webhook_url || ''
     };
 
     return this.client.request<VideoCreateJobResponse>(

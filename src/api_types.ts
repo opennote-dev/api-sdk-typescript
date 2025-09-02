@@ -29,6 +29,7 @@ export interface VideoCreateJobRequest {
   script?: string;
   upload_to_s3?: boolean;
   title?: string;
+  webhook_url?: string;
 }
 
 export interface VideoCreateJobResponse {
