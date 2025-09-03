@@ -94,7 +94,7 @@ export class Flashcards {
     count?: number;
     set_name?: string;
   }): Promise<FlashcardCreateResponse> {
-    return this.client.request<FlashcardCreateResponse>('POST', '/v1/interactives/flashcard/create', { body: JSON.stringify(params) });
+    return this.client.request<FlashcardCreateResponse>('POST', '/v1/interactives/flashcards/create', { body: JSON.stringify(params) });
   }
 }
 
