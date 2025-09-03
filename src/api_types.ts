@@ -88,3 +88,22 @@ export interface JournalContentResponse {
   content?: string;
   timestamp: string;
 }
+
+export interface Flashcard {
+    front: string 
+    back: string
+}
+
+export interface FlashcardCreateRequest {
+    set_description: string
+    count: number
+    set_name: string
+}
+
+export interface FlashcardCreateResponse {
+    success: boolean 
+    message: string
+    set_name: string
+    flashcards: Flashcard[]
+    timestamp: string
+}
