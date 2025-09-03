@@ -37,7 +37,7 @@ export class Video {
       script: params.script,
       upload_to_s3: params.upload_to_s3 || false,
       title: params.title || '',
-      webhook_url: params.webhook_url || ''
+      webhook_url: params.webhook_url || '' // Optional, sends final status to this URL as POST
     };
 
     return this.client.request<VideoCreateJobResponse>(
