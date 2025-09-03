@@ -29,6 +29,7 @@ export interface VideoCreateJobRequest {
   script?: string;
   upload_to_s3?: boolean;
   title?: string;
+  webhook_url?: string;
 }
 
 export interface VideoCreateJobResponse {
@@ -86,4 +87,23 @@ export interface JournalContentResponse {
   journal_id?: string;
   content?: string;
   timestamp: string;
+}
+
+export interface Flashcard {
+    front: string 
+    back: string
+}
+
+export interface FlashcardCreateRequest {
+    set_description: string
+    count: number
+    set_name: string
+}
+
+export interface FlashcardCreateResponse {
+    success: boolean 
+    message: string
+    set_name: string
+    flashcards: Flashcard[]
+    timestamp: string
 }

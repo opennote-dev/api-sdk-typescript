@@ -6,7 +6,9 @@ import {
   JournalContentResponse,
   VideoAPIRequestMessage,
   OPENNOTE_BASE_URL,
-  ModelChoices
+  ModelChoices,
+  FlashcardCreateResponse,
+  FlashcardCreateRequest
 } from './api_types';
 import { BaseClient } from './base_client';
 
@@ -23,6 +25,7 @@ export class Video {
     script?: string;
     upload_to_s3?: boolean;
     title?: string;
+    webhook_url?: string;
   }): Promise<VideoCreateJobResponse> {
     const request: VideoCreateJobRequest = {
       model: params.model || 'picasso',
@@ -34,6 +37,7 @@ export class Video {
       script: params.script,
       upload_to_s3: params.upload_to_s3 || false,
       title: params.title || '',
+      webhook_url: params.webhook_url || '' // Optional, sends final status to this URL as POST
     };
 
     return this.client.request<VideoCreateJobResponse>(
@@ -82,9 +86,22 @@ export class Journals {
   }
 }
 
+export class Flashcards {
+  constructor(private client: OpennoteClient) {}
+  
+  async create(params: {
+    set_description: string;
+    count?: number;
+    set_name?: string;
+  }): Promise<FlashcardCreateResponse> {
+    return this.client.request<FlashcardCreateResponse>('POST', '/v1/interactives/flashcard/create', { body: JSON.stringify(params) });
+  }
+}
+
 export class OpennoteClient extends BaseClient {
   public video: Video;
   public journals: Journals;
+  public flashcards: Flashcards;
 
   constructor(
     apiKey: string,
@@ -95,6 +112,7 @@ export class OpennoteClient extends BaseClient {
     super(apiKey, baseUrl, timeout, maxRetries);
     this.video = new Video(this);
     this.journals = new Journals(this);
+    this.flashcards = new Flashcards(this);
   }
 
   async request<T>(
