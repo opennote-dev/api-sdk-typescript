@@ -2,7 +2,7 @@ export const OPENNOTE_BASE_URL = "https://api.opennote.com";
 
 export type ModelChoices = "picasso";
 export type VideoStatusChoices = "pending" | "completed" | "failed" | "status_error";
-export type MessageRoleChoices = "user" | "assistant";
+export type MessageRoleChoices = "user" | "assistant" | "system";
 
 export interface ValidationError {
   loc: (string | number)[];
