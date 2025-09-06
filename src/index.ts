@@ -110,6 +110,7 @@ export class PracticeProblems {
     count?: number;
     set_name?: string;
     search_for_problems?: boolean;
+    webhook_url?: string;
   }): Promise<PracticeProblemSetJobCreateResponse> {
     return this.client.request<PracticeProblemSetJobCreateResponse>('POST', '/v1/interactives/practice/create', { body: JSON.stringify(params) });
   }

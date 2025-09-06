@@ -136,6 +136,7 @@ export interface PracticeProblemSetJobCreateRequest {
   count: number;
   set_name?: string;
   search_for_problems: boolean;
+  webhook_url?: string;
 }
 
 export interface PracticeProblemSetJobCreateResponse {
