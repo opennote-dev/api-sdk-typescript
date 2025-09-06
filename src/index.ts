@@ -8,7 +8,11 @@ import {
   OPENNOTE_BASE_URL,
   ModelChoices,
   FlashcardCreateResponse,
-  FlashcardCreateRequest
+  FlashcardCreateRequest,
+  PracticeProblemSetJobCreateResponse,
+  PracticeProblemSetStatusResponse,
+  PracticeProblem,
+  GradeFRQResponse
 } from './api_types';
 import { BaseClient } from './base_client';
 
@@ -98,10 +102,32 @@ export class Flashcards {
   }
 }
 
+export class PracticeProblems {
+  constructor(private client: OpennoteClient) {}
+
+  async create(params: {
+    set_description: string;
+    count?: number;
+    set_name?: string;
+    search_for_problems?: boolean;
+  }): Promise<PracticeProblemSetJobCreateResponse> {
+    return this.client.request<PracticeProblemSetJobCreateResponse>('POST', '/v1/interactives/practice/create', { body: JSON.stringify(params) });
+  }
+
+  async status(set_id: string): Promise<PracticeProblemSetStatusResponse> {
+    return this.client.request<PracticeProblemSetStatusResponse>('GET', `/v1/interactives/practice/status/${set_id}`);
+  }
+
+  async grade(problem: PracticeProblem): Promise<GradeFRQResponse> {
+    return this.client.request<GradeFRQResponse>('POST', `/v1/interactives/practice/grade`, { body: JSON.stringify(problem) });
+  }
+}
+
 export class OpennoteClient extends BaseClient {
   public video: Video;
   public journals: Journals;
   public flashcards: Flashcards;
+  public practice: PracticeProblems;
 
   constructor(
     apiKey: string,
@@ -113,6 +139,7 @@ export class OpennoteClient extends BaseClient {
     this.video = new Video(this);
     this.journals = new Journals(this);
     this.flashcards = new Flashcards(this);
+    this.practice = new PracticeProblems(this);
   }
 
   async request<T>(

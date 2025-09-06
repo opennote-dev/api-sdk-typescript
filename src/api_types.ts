@@ -107,3 +107,64 @@ export interface FlashcardCreateResponse {
     flashcards: Flashcard[]
     timestamp: string
 }
+
+
+
+export interface PracticeProblem {
+  problem_type: "mcq" | "frq" | "selectall"
+  problem_statement: string
+  correct_answer?: string | string[] // for MCQ
+  difficulty: "easy" | "medium" | "hard"
+  answer_choices?: Record<string, string>;  // Only for MCQ
+  explanation?: string;
+  scoring_details?: string;  // Only for FRQ
+  include_graph: boolean;
+  graph_description?: string;
+  graph_url?: string;
+  user_answer?: string | string[];  // User's selected option(s) or textarea response
+}
+
+export interface PracticeProblemSet {
+  set_id: string; 
+  set_name?: string;
+  problems?: PracticeProblem[];
+  cost?: number;
+}
+
+export interface PracticeProblemSetJobCreateRequest { 
+  set_description: string;
+  count: number;
+  set_name?: string;
+  search_for_problems: boolean;
+}
+
+export interface PracticeProblemSetJobCreateResponse {
+  success: boolean;
+  message?: string;
+  set_id?: string;
+  timestamp: string;
+}
+
+export interface PracticeProblemSetStatusResponse {
+  set_id: string;
+  success: boolean;   
+  status: "pending" | "completed" | "failed" | "status_error";
+  message?: string;
+  total_problems: number; 
+  completed_problems: number;
+  response?: PracticeProblemSet;
+  timestamp: string;
+}
+
+export interface GradeFRQRequest {
+  problem: PracticeProblem;
+}
+
+export interface GradeFRQResponse {
+  success: boolean;   
+  timestamp: string;
+  score: number;
+  explanation: string;
+  max_score: number;
+  percentage: number;
+}
