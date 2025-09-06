@@ -12,7 +12,8 @@ import {
   PracticeProblemSetJobCreateResponse,
   PracticeProblemSetStatusResponse,
   PracticeProblem,
-  GradeFRQResponse
+  GradeFRQResponse,
+  GradeFRQRequest
 } from './api_types';
 import { BaseClient } from './base_client';
 
@@ -120,7 +121,7 @@ export class PracticeProblems {
   }
 
   async grade(problem: PracticeProblem): Promise<GradeFRQResponse> {
-    return this.client.request<GradeFRQResponse>('POST', `/v1/interactives/practice/grade`, { body: JSON.stringify(problem) });
+    return this.client.request<GradeFRQResponse>('POST', `/v1/interactives/practice/grade`, { body: JSON.stringify({ problem: problem }) });
   }
 }
 
