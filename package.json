@@ -1,6 +1,6 @@
 {
   "name": "@opennote-ed/sdk",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "Opennote TypeScript SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,5 +35,8 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "uuid": "^13.0.0"
   }
 }

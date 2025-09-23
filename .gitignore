@@ -11,7 +11,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 # Caches
-
+temp.ts
 .cache
 
 # Diagnostic reports (https://nodejs.org/api/report.html)

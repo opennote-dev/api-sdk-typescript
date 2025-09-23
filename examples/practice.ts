@@ -8,17 +8,19 @@ async function sleep(ms: number): Promise<void> {
 
 async function main() {
   // Initialize client with API key from environment variable
-  const client = new OpennoteClient(process.env.OPENNOTE_API_KEY || '');
+  const client = new OpennoteClient({
+    api_key: process.env.OPENNOTE_API_KEY || ''
+  });
   
   try {
     console.log(SEPARATOR);
     console.log("Creating Practice Problem Set...");
 
-    const response = await client.practice.create({
+    const response = await client.interactives.practice.create({
       set_description: "Linear algebra concepts including matrices, eigenvalues, and vector spaces",
       count: 3,
       set_name: "Linear Algebra Practice",
-      search_for_problems: true,
+      search_for_problems: true
     });
 
     console.log("\nPractice Set Creation Response:");
@@ -33,7 +35,7 @@ async function main() {
       while (true) {
         console.log(SEPARATOR);
         console.log(`Checking Practice Set Status (#${statusCheckCount})...`);
-        status = await client.practice.status(response.set_id);
+        status = await client.interactives.practice.status({ set_id: response.set_id });
         
         console.log("\n", JSON.stringify(status, null, 4));
         console.log(SEPARATOR);
@@ -54,7 +56,7 @@ async function main() {
       console.log(JSON.stringify(status, null, 4));
       console.log(SEPARATOR);
 
-      if (status.success && status.response?.problems && status.response.problems.length > 0) {
+      if (status.success && status.response && status.response.problems && status.response.problems.length > 0) {
         console.log(SEPARATOR);
         console.log("Grading Example - First Problem...");
         
@@ -63,7 +65,7 @@ async function main() {
         // Add a student answer to the problem
         firstProblem.user_answer = "A matrix is a rectangular array of numbers. Eigenvalues are scalar values that represent how a matrix transforms vectors.";
         
-        const gradeResponse = await client.practice.grade(firstProblem);
+        const gradeResponse = await client.interactives.practice.grade({ problem: firstProblem });
         
         console.log("\nGrading Response:");
         console.log(JSON.stringify(gradeResponse, null, 4));

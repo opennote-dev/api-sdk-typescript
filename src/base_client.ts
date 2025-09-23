@@ -55,12 +55,16 @@ export abstract class BaseClient {
   protected baseUrl: string;
   protected timeout: number;
   protected maxRetries: number;
+  protected defaultHeaders: Record<string, string>;
+  protected defaultBody: Record<string, any>;
 
   constructor(
     apiKey: string,
     baseUrl: string = OPENNOTE_BASE_URL,
     timeout: number = 30000,
-    maxRetries: number = 3
+    maxRetries: number = 3,
+    defaultHeaders?: Record<string, string>,
+    defaultBody?: Record<string, any>
   ) {
     if (!apiKey) {
       // In browser environment, check for global variable
@@ -78,13 +82,30 @@ export abstract class BaseClient {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.timeout = timeout;
     this.maxRetries = maxRetries;
+    this.defaultHeaders = defaultHeaders || {};
+    this.defaultBody = defaultBody || {};
   }
 
-  protected getHeaders(): Record<string, string> {
-    return {
+  protected getHeaders(extraHeaders?: Record<string, string>): Record<string, string> {
+    const headers: Record<string, string> = {
       'Authorization': `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
     };
+    Object.assign(headers, this.defaultHeaders);
+    if (extraHeaders) {
+      Object.assign(headers, extraHeaders);
+    }
+    return headers;
+  }
+
+  protected mergeBody(body: Record<string, any>, extraBody?: Record<string, any>): Record<string, any> {
+    const merged: Record<string, any> = {};
+    Object.assign(merged, this.defaultBody);
+    Object.assign(merged, body);
+    if (extraBody) {
+      Object.assign(merged, extraBody);
+    }
+    return merged;
   }
 
   protected async handleResponseErrors(response: Response): Promise<void> {
