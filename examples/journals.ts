@@ -4,7 +4,7 @@ const SEPARATOR = "================================\n";
 
 async function main() {
   // Initialize client with API key from environment variable
-  const client = new OpennoteClient(process.env.OPENNOTE_API_KEY || '');
+  const client = new OpennoteClient({ api_key: process.env.OPENNOTE_API_KEY || '' });
   
   try {
     // Fetch list of journals
@@ -18,7 +18,7 @@ async function main() {
     // If successful and journals exist, fetch content of the first journal
     if (journalsResponse.success && journalsResponse.journals && journalsResponse.journals.length > 0) {
       const firstJournalId = journalsResponse.journals[0].id;
-      const firstContent = await client.journals.content(firstJournalId);
+      const firstContent = await client.journals.content({ journal_id: firstJournalId });
       
       console.log(SEPARATOR);
       console.log("First Journal Content:");

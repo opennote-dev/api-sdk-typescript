@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { blockToNodeParams, getNodeType } from './block_type_converters';
 
 // Enums for specific types
 export enum ChartType {
@@ -17,11 +18,7 @@ export enum Position {
 export enum OperationType {
   CREATE_NODE = "create_node",
   UPDATE_NODE = "update_node",
-  DELETE_NODE = "delete_node",
-  INSERT_NODE = "insert_node",
-  BATCH_CREATE = "batch_create",
-  BATCH_UPDATE = "batch_update",
-  BATCH_DELETE = "batch_delete"
+  DELETE_NODE = "delete_node"
 }
 
 // Base Block Model
@@ -37,9 +34,15 @@ export abstract class BaseBlock {
    * Note: This method should be overridden by the block_type_converters module
    */
   toNode(): Record<string, any> {
-    // This will be implemented through the block_type_converters module
-    // to avoid circular dependencies
-    throw new Error('toNode() should be called through block_type_converters module');
+    const params = blockToNodeParams(this)
+    const node_type = getNodeType(this)
+    return {
+        "type": node_type,
+        "params": params,
+        "attrs": {
+            "id": this.id
+        }
+    }
   }
 }
 
@@ -59,22 +62,11 @@ export class HeadingBlock extends BaseBlock {
 
   constructor(level: number, content: string) {
     super();
-    if (level < 1 || level > 6) {
-      throw new Error("Heading level must be between 1 and 6");
+    if (level < 1 || level > 3) {
+      throw new Error("Heading level must be between 1 and 3");
     }
     this.level = level;
     this.content = content;
-  }
-}
-
-export class TextBlock extends BaseBlock {
-  text: string;
-  marks?: string[];
-
-  constructor(text: string, marks?: string[]) {
-    super();
-    this.text = text;
-    this.marks = marks;
   }
 }
 
@@ -135,7 +127,7 @@ export class CustomCodeBlock extends BaseBlock {
   code: string;
   language: string;
 
-  constructor(code: string, language: string = "javascript") {
+  constructor(code: string, language: string = "python") {
     super();
     this.code = code;
     this.language = language;
@@ -241,19 +233,10 @@ export class DOCXBlock extends BaseBlock {
 }
 
 // Interactive Blocks
-export class WhiteboardBlock extends BaseBlock {
-  state: string;
-
-  constructor(state: string = "") {
-    super();
-    this.state = state;
-  }
-}
-
 export class DesmosBlock extends BaseBlock {
   equations: string;
 
-  constructor(equations: string = "") {
+  constructor(equations: string = "[y=x]") {
     super();
     this.equations = equations;
   }

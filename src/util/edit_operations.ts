@@ -105,7 +105,7 @@ export function makeHeading(level: number, text: string, referenceId?: string): 
  * @param language The programming language (default: "javascript")
  * @param referenceId Optional reference node ID
  */
-export function makeCodeBlock(code: string, language: string = "javascript", referenceId?: string): CreateNodeOperation {
+export function makeCodeBlock(code: string, language: string = "python", referenceId?: string): CreateNodeOperation {
   const block = new CustomCodeBlock(code, language);
   return createBlock(block, referenceId);
 }

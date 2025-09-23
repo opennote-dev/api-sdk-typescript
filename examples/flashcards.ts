@@ -4,11 +4,13 @@ const SEPARATOR = "================================\n";
 
 async function main() {
   // Initialize client with API key from environment variable
-  const client = new OpennoteClient(process.env.OPENNOTE_API_KEY || '');
+  const client = new OpennoteClient({
+    api_key: process.env.OPENNOTE_API_KEY || ''
+  });
   
   try {
     // Create list of flashcards
-    const flashcardsResponse = await client.flashcards.create({
+    const flashcardsResponse = await client.interactives.flashcards.create({
       set_description: "The most important things to know about the Silk Road",
       count: 5
     });

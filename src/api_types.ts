@@ -191,14 +191,14 @@ export interface Mark {
 }
 
 export interface BlockAttrs {
-  id?: string;
+  id: string;
   level?: number; // For headings
   [key: string]: any;
 }
 
 export interface BlockNode {
   type: string;
-  attrs?: BlockAttrs;
+  attrs: BlockAttrs;
   content?: BlockNode[];
   marks?: Mark[];
   text?: string;

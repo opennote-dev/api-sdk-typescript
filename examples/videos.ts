@@ -9,7 +9,7 @@ function sleep(ms: number): Promise<void> {
 
 async function main() {
   // Initialize client with API key from environment variable
-  const client = new OpennoteClient(process.env.OPENNOTE_API_KEY || '');
+  const client = new OpennoteClient({ api_key: process.env.OPENNOTE_API_KEY || '' });
   
   try {
     console.log(SEPARATOR);
@@ -47,7 +47,7 @@ async function main() {
         console.log(SEPARATOR);
         console.log(`Checking Video Status (#${statusCheckCount})...`);
         
-        const status = await client.video.status(response.video_id);
+        const status = await client.video.status({ video_id: response.video_id });
         
         console.log("\n", JSON.stringify(status, null, 4));
         console.log(SEPARATOR);

@@ -7,7 +7,6 @@ import {
   BaseBlock,
   ParagraphBlock,
   HeadingBlock,
-  TextBlock,
   BulletListBlock,
   OrderedListBlock,
   ListItemBlock,
@@ -23,7 +22,6 @@ import {
   YoutubeBlock,
   PDFBlock,
   DOCXBlock,
-  WhiteboardBlock,
   DesmosBlock,
   ChartBlock,
   MentionBlock,
@@ -62,11 +60,6 @@ export function blockToNodeParams(block: BaseBlock): any[] {
   else if (block instanceof HeadingBlock) {
     // heading: (level: number, content: Fragment | string, attrs?: Record<string, any>)
     return [block.level, block.content];
-  }
-  
-  else if (block instanceof TextBlock) {
-    // text: (text: string, marks?: Mark[])
-    return block.marks ? [block.text, block.marks] : [block.text];
   }
   
   else if (block instanceof BulletListBlock) {
@@ -170,11 +163,6 @@ export function blockToNodeParams(block: BaseBlock): any[] {
     return params;
   }
   
-  else if (block instanceof WhiteboardBlock) {
-    // whiteboard: (state: string = '', attrs?: Record<string, any>)
-    return [block.state];
-  }
-  
   else if (block instanceof DesmosBlock) {
     // desmos: (equations: string = '', attrs?: Record<string, any>)
     return [block.equations];
@@ -268,7 +256,6 @@ export function getNodeType(block: BaseBlock): string {
   const typeMap = new Map<any, string>([
     [ParagraphBlock, "paragraph"],
     [HeadingBlock, "heading"],
-    [TextBlock, "text"],
     [BulletListBlock, "bulletList"],
     [OrderedListBlock, "orderedList"],
     [ListItemBlock, "listItem"],
@@ -284,7 +271,6 @@ export function getNodeType(block: BaseBlock): string {
     [YoutubeBlock, "youtube"],
     [PDFBlock, "pdf"],
     [DOCXBlock, "docx"],
-    [WhiteboardBlock, "whiteboard"],
     [DesmosBlock, "desmos"],
     [ChartBlock, "chart"],
     [MentionBlock, "mention"],
@@ -458,7 +444,7 @@ export function quickHeading(level: number, text: string, referenceId?: string):
   return createNodeOperation(block, referenceId);
 }
 
-export function quickCodeBlock(code: string, language: string = "javascript", referenceId?: string): CreateNodeOperation {
+export function quickCodeBlock(code: string, language: string = "python", referenceId?: string): CreateNodeOperation {
   const block = new CustomCodeBlock(code, language);
   return createNodeOperation(block, referenceId);
 }
