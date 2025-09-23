@@ -46,10 +46,6 @@ import {
   CreateNodeOperation,
   UpdateNodeOperation,
   DeleteNodeOperation,
-  InsertNodeOperation,
-  BatchCreateOperation,
-  BatchUpdateOperation,
-  BatchDeleteOperation
 } from './api_types';
 
 /**
@@ -356,84 +352,6 @@ export function deleteNodeOperation(nodeId: string): DeleteNodeOperation {
   return {
     type: "delete_node",
     nodeId: nodeId
-  };
-}
-
-/**
- * Create an insert_node operation for a raw ProseMirror node.
- */
-export function insertNodeOperation(
-  node: Record<string, any>,
-  referenceId: string,
-  position: Position | string = Position.AFTER
-): InsertNodeOperation {
-  return {
-    type: "insert_node",
-    referenceId: referenceId,
-    node: node,
-    position: typeof position === 'string' ? position as "before" | "after" : position as "before" | "after"
-  };
-}
-
-/**
- * Create a batch_create operation from multiple blocks.
- */
-export function batchCreateOperation(
-  blocks: BaseBlock[],
-  referenceIds?: (string | undefined)[],
-  positions?: (Position | string)[]
-): BatchCreateOperation {
-  const refIds = referenceIds || new Array(blocks.length).fill(undefined);
-  const posArray = positions || new Array(blocks.length).fill(Position.AFTER);
-  
-  const nodes: Record<string, any>[] = [];
-  
-  for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
-    const refId = refIds[i];
-    const pos = posArray[i];
-    
-    const nodeType = getNodeType(block);
-    const params = blockToNodeParams(block);
-    
-    const nodeConfig: Record<string, any> = {
-      nodeType: nodeType,
-      params: params,
-      position: typeof pos === 'string' ? pos : pos
-    };
-    
-    if (refId) {
-      nodeConfig.referenceId = refId;
-    }
-    
-    nodes.push(nodeConfig);
-  }
-  
-  return {
-    type: "batch_create",
-    nodes: nodes
-  };
-}
-
-/**
- * Create a batch_update operation to replace multiple nodes.
- */
-export function batchUpdateOperation(
-  updates: Array<{ nodeId: string; node: Record<string, any> }>
-): BatchUpdateOperation {
-  return {
-    type: "batch_update",
-    updates: updates
-  };
-}
-
-/**
- * Create a batch_delete operation.
- */
-export function batchDeleteOperation(nodeIds: string[]): BatchDeleteOperation {
-  return {
-    type: "batch_delete",
-    nodeIds: nodeIds
   };
 }
 

@@ -232,36 +232,11 @@ export interface DeleteNodeOperation {
   nodeId: string;
 }
 
-export interface InsertNodeOperation {
-  type: "insert_node";
-  referenceId?: string;
-  node: any;
-  position: "before" | "after";
-}
-
-export interface BatchCreateOperation {
-  type: "batch_create";
-  nodes: Record<string, any>[];
-}
-
-export interface BatchUpdateOperation {
-  type: "batch_update";
-  updates: Record<string, any>[];
-}
-
-export interface BatchDeleteOperation {
-  type: "batch_delete";
-  nodeIds: string[];
-}
-
 export type EditOperation = 
   | CreateNodeOperation
   | UpdateNodeOperation
   | DeleteNodeOperation
-  | InsertNodeOperation
-  | BatchCreateOperation
-  | BatchUpdateOperation
-  | BatchDeleteOperation;
+;
 
 export interface EditJournalRequest {
   journal_id: string;
@@ -274,15 +249,10 @@ export interface OperationResultData {
   nodeId?: string;
   updated?: string;
   deleted?: string;
-  inserted?: boolean;
-  batchCreated?: number;
-  nodeIds?: string[];
-  batchUpdated?: number;
-  batchDeleted?: number;
 }
 
 export interface EditResults {
-  operation: "create_node" | "update_node" | "delete_node" | "insert_node" | "batch_create" | "batch_update" | "batch_delete";
+  operation: "create_node" | "update_node" | "delete_node";
   success: boolean;
   error?: string;
   data?: OperationResultData;
