@@ -96,15 +96,15 @@ export interface Flashcard {
 
 export interface FlashcardCreateRequest {
     set_description: string
-    count: number
-    set_name: string
+    count?: number
+    set_name?: string
 }
 
 export interface FlashcardCreateResponse {
     success: boolean 
-    message: string
-    set_name: string
-    flashcards: Flashcard[]
+    message?: string
+    set_name?: string
+    flashcards?: Flashcard[]
     timestamp: string
 }
 
@@ -133,9 +133,9 @@ export interface PracticeProblemSet {
 
 export interface PracticeProblemSetJobCreateRequest { 
   set_description: string;
-  count: number;
+  count?: number;
   set_name?: string;
-  search_for_problems: boolean;
+  search_for_problems?: boolean;
   webhook_url?: string;
 }
 
@@ -168,4 +168,130 @@ export interface GradeFRQResponse {
   explanation: string;
   max_score: number;
   percentage: number;
+}
+
+// Journal Editor Types
+export interface ImportFromMarkdownRequest {
+  markdown: string;
+  title?: string;
+}
+
+export interface ImportFromMarkdownResponse {
+  success: boolean;
+  message?: string;
+  journal_id?: string;
+  journal_url?: string;
+  timestamp: string;
+}
+
+// ProseMirror Model Types
+export interface Mark {
+  type: string;
+  attrs?: BlockAttrs;
+}
+
+export interface BlockAttrs {
+  id?: string;
+  level?: number; // For headings
+  [key: string]: any;
+}
+
+export interface BlockNode {
+  type: string;
+  attrs?: BlockAttrs;
+  content?: BlockNode[];
+  marks?: Mark[];
+  text?: string;
+  [key: string]: any;
+}
+
+export interface ModelInfoResponse {
+  success: boolean;
+  message?: string;
+  model?: BlockNode;
+  timestamp: string;
+}
+
+// Edit Journal Operation Types
+export interface CreateNodeOperation {
+  type: "create_node";
+  nodeType: string;
+  params: any[];
+  referenceId?: string;
+  position?: "before" | "after";
+}
+
+export interface UpdateNodeOperation {
+  type: "update_node";
+  nodeId: string;
+  node: Record<string, any>;
+}
+
+export interface DeleteNodeOperation {
+  type: "delete_node";
+  nodeId: string;
+}
+
+export interface InsertNodeOperation {
+  type: "insert_node";
+  referenceId?: string;
+  node: any;
+  position: "before" | "after";
+}
+
+export interface BatchCreateOperation {
+  type: "batch_create";
+  nodes: Record<string, any>[];
+}
+
+export interface BatchUpdateOperation {
+  type: "batch_update";
+  updates: Record<string, any>[];
+}
+
+export interface BatchDeleteOperation {
+  type: "batch_delete";
+  nodeIds: string[];
+}
+
+export type EditOperation = 
+  | CreateNodeOperation
+  | UpdateNodeOperation
+  | DeleteNodeOperation
+  | InsertNodeOperation
+  | BatchCreateOperation
+  | BatchUpdateOperation
+  | BatchDeleteOperation;
+
+export interface EditJournalRequest {
+  journal_id: string;
+  operations: EditOperation[];
+  sync_realtime_state?: boolean; // Whether to directly update the state of the journal to all connected users. WARNING: Operations through synced states CANNOT be undone, and will remove Ctrl+Z functionality for all users for the changes made.
+}
+
+export interface OperationResultData {
+  created?: boolean;
+  nodeId?: string;
+  updated?: string;
+  deleted?: string;
+  inserted?: boolean;
+  batchCreated?: number;
+  nodeIds?: string[];
+  batchUpdated?: number;
+  batchDeleted?: number;
+}
+
+export interface EditResults {
+  operation: "create_node" | "update_node" | "delete_node" | "insert_node" | "batch_create" | "batch_update" | "batch_delete";
+  success: boolean;
+  error?: string;
+  data?: OperationResultData;
+}
+
+export interface EditJournalResponse {
+  success: boolean;
+  message?: string;
+  journal_id: string;
+  results: EditResults[];
+  timestamp: string;
 }
