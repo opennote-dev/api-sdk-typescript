@@ -20,7 +20,8 @@ import {
   EditJournalRequest,
   EditJournalResponse,
   ModelInfoResponse,
-  EditOperation
+  EditOperation,
+  JournalDeleteResponse
 } from './api_types';
 import { BaseClient } from './base_client';
 
@@ -129,12 +130,12 @@ export class JournalEditor {
     );
   }
 
-  async delete(journalId: string, extraHeaders?: Record<string, string>): Promise<ModelInfoResponse> {
+  async delete(journalId: string, extraHeaders?: Record<string, string>): Promise<JournalDeleteResponse> {
     if (!journalId) {
       throw new Error('journal_id must be provided');
     }
 
-    return this.client.request<ModelInfoResponse>(
+    return this.client.request<JournalDeleteResponse>(
       'DELETE',
       `/v1/journals/editor/delete/${journalId}`,
       { extraHeaders }

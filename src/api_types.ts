@@ -205,6 +205,35 @@ export interface BlockNode {
   [key: string]: any;
 }
 
+export interface DeletedJournalData {
+  id: string;
+  type: string;
+  color?: string;
+  title: string;
+  content: string;
+  comments: any[];
+  created_at: string;
+  creator_id: string;
+  is_trashed: boolean;
+  trashed_at?: string;
+  updated_at: string;
+  font_family: string;
+  parent_item?: string;
+  shared_users: string[];
+  order_indexes?: any;
+  publish_status: string;
+  pending_invites?: any;
+  user_permissions: Record<string, string>;
+  publish_subdomain: string;
+}
+
+export interface JournalDeleteResponse {
+  success: boolean;
+  message?: string;
+  timestamp: string;
+  deleted_journal_data?: DeletedJournalData;
+}
+
 export interface ModelInfoResponse {
   success: boolean;
   message?: string;
