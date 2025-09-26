@@ -17,7 +17,11 @@ import {
   EditJournalRequest,
   EditJournalResponse,
   ModelInfoResponse,
-  JournalDeleteResponse
+  JournalDeleteResponse,
+  CreateJournalRequest,
+  CreateJournalResponse,
+  RenameJournalRequest,
+  RenameJournalResponse
 } from './api_types';
 import { BaseClient } from './base_client';
 import {
@@ -27,6 +31,8 @@ import {
   EditJournalParams,
   ModelInfoParams,
   DeleteJournalParams,
+  CreateJournalParams,
+  RenameJournalParams,
   JournalsListParams,
   JournalContentParams,
   FlashcardsCreateParams,
@@ -152,6 +158,41 @@ export class Journals {
 
   constructor(private client: OpennoteClient) {
     this.editor = new JournalEditor(client);
+  }
+
+  async create(params: CreateJournalParams): Promise<CreateJournalResponse> {
+    const { title, extra_headers, extra_body } = params;
+    const request: CreateJournalRequest = {
+      title
+    };
+
+    return this.client.request<CreateJournalResponse>(
+      'PUT',
+      '/v1/journals/editor/create',
+      { 
+        body: JSON.stringify(request),
+        extraHeaders: extra_headers,
+        extraBody: extra_body
+      }
+    );
+  }
+
+  async rename(params: RenameJournalParams): Promise<RenameJournalResponse> {
+    const { journal_id, title, extra_headers, extra_body } = params;
+    const request: RenameJournalRequest = {
+      journal_id,
+      title
+    };
+
+    return this.client.request<RenameJournalResponse>(
+      'PATCH',
+      '/v1/journals/editor/rename',
+      { 
+        body: JSON.stringify(request),
+        extraHeaders: extra_headers,
+        extraBody: extra_body
+      }
+    );
   }
 
   async list(params: JournalsListParams = {}): Promise<JournalsResponse> {
@@ -341,9 +382,29 @@ export class OpennoteClient extends BaseClient {
     }
   }
 
-  async health(params: HealthCheckParams = {}): Promise<{ status: string }> {
+  async _health(params: HealthCheckParams = {}): Promise<"OK" | any> {
     const { extra_headers } = params;
-    return this.request<{ status: string }>('GET', '/v1/health', { extraHeaders: extra_headers });
+    const url = `${this.baseUrl}/v1/health`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    const headers = this.getHeaders(extra_headers);
+    
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers,
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.text() as "OK" | any;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 }
 

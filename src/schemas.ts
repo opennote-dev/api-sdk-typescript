@@ -53,6 +53,19 @@ export interface DeleteJournalParams {
 }
 
 // Journals Schemas
+export interface CreateJournalParams {
+  title: string;
+  extra_headers?: Record<string, string>;
+  extra_body?: Record<string, any>;
+}
+
+export interface RenameJournalParams {
+  journal_id: string;
+  title: string;
+  extra_headers?: Record<string, string>;
+  extra_body?: Record<string, any>;
+}
+
 export interface JournalsListParams {
   page_token?: number;
   extra_headers?: Record<string, string>;
