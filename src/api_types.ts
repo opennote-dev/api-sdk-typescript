@@ -241,6 +241,33 @@ export interface ModelInfoResponse {
   timestamp: string;
 }
 
+// Create and Rename Journal Types
+export interface CreateJournalRequest {
+  title: string;
+}
+
+export interface CreateJournalResponse {
+  success: boolean;
+  message?: string;
+  journal_id?: string;
+  journal_url?: string;
+  timestamp: string;
+}
+
+export interface RenameJournalRequest {
+  journal_id: string;
+  title: string;
+}
+
+export interface RenameJournalResponse {
+  success: boolean;
+  message?: string;
+  old_title?: string;
+  new_title?: string;
+  journal_id?: string;
+  timestamp: string;
+}
+
 // Edit Journal Operation Types
 export interface CreateNodeOperation {
   type: "create_node";

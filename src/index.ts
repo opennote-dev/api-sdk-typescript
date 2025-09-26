@@ -17,7 +17,11 @@ import {
   EditJournalRequest,
   EditJournalResponse,
   ModelInfoResponse,
-  JournalDeleteResponse
+  JournalDeleteResponse,
+  CreateJournalRequest,
+  CreateJournalResponse,
+  RenameJournalRequest,
+  RenameJournalResponse
 } from './api_types';
 import { BaseClient } from './base_client';
 import {
@@ -27,6 +31,8 @@ import {
   EditJournalParams,
   ModelInfoParams,
   DeleteJournalParams,
+  CreateJournalParams,
+  RenameJournalParams,
   JournalsListParams,
   JournalContentParams,
   FlashcardsCreateParams,
@@ -152,6 +158,41 @@ export class Journals {
 
   constructor(private client: OpennoteClient) {
     this.editor = new JournalEditor(client);
+  }
+
+  async create(params: CreateJournalParams): Promise<CreateJournalResponse> {
+    const { title, extra_headers, extra_body } = params;
+    const request: CreateJournalRequest = {
+      title
+    };
+
+    return this.client.request<CreateJournalResponse>(
+      'PUT',
+      '/v1/journals/editor/create',
+      { 
+        body: JSON.stringify(request),
+        extraHeaders: extra_headers,
+        extraBody: extra_body
+      }
+    );
+  }
+
+  async rename(params: RenameJournalParams): Promise<RenameJournalResponse> {
+    const { journal_id, title, extra_headers, extra_body } = params;
+    const request: RenameJournalRequest = {
+      journal_id,
+      title
+    };
+
+    return this.client.request<RenameJournalResponse>(
+      'PATCH',
+      '/v1/journals/editor/rename',
+      { 
+        body: JSON.stringify(request),
+        extraHeaders: extra_headers,
+        extraBody: extra_body
+      }
+    );
   }
 
   async list(params: JournalsListParams = {}): Promise<JournalsResponse> {
