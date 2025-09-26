@@ -382,9 +382,29 @@ export class OpennoteClient extends BaseClient {
     }
   }
 
-  async health(params: HealthCheckParams = {}): Promise<{ status: string }> {
+  async _health(params: HealthCheckParams = {}): Promise<string> {
     const { extra_headers } = params;
-    return this.request<{ status: string }>('GET', '/v1/health', { extraHeaders: extra_headers });
+    const url = `${this.baseUrl}/v1/health`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    const headers = this.getHeaders(extra_headers);
+    
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers,
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.text();
+    } finally {
+      clearTimeout(timeoutId);
+    }
   }
 }
 
