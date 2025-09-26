@@ -382,7 +382,7 @@ export class OpennoteClient extends BaseClient {
     }
   }
 
-  async _health(params: HealthCheckParams = {}): Promise<string> {
+  async _health(params: HealthCheckParams = {}): Promise<"OK" | any> {
     const { extra_headers } = params;
     const url = `${this.baseUrl}/v1/health`;
     const controller = new AbortController();
@@ -401,7 +401,7 @@ export class OpennoteClient extends BaseClient {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return await response.text();
+      return await response.text() as "OK" | any;
     } finally {
       clearTimeout(timeoutId);
     }
