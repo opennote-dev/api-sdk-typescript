@@ -174,6 +174,7 @@ export interface GradeFRQResponse {
 export interface ImportFromMarkdownRequest {
   markdown: string;
   title?: string;
+  team_slug?: string;
 }
 
 export interface ImportFromMarkdownResponse {
@@ -213,17 +214,14 @@ export interface DeletedJournalData {
   content: string;
   comments: any[];
   created_at: string;
-  creator_id: string;
   is_trashed: boolean;
   trashed_at?: string;
   updated_at: string;
   font_family: string;
   parent_item?: string;
-  shared_users: string[];
   order_indexes?: any;
   publish_status: string;
   pending_invites?: any;
-  user_permissions: Record<string, string>;
   publish_subdomain: string;
 }
 
@@ -244,6 +242,7 @@ export interface ModelInfoResponse {
 // Create and Rename Journal Types
 export interface CreateJournalRequest {
   title: string;
+  team_slug?: string;
 }
 
 export interface CreateJournalResponse {
@@ -297,7 +296,7 @@ export type EditOperation =
 export interface EditJournalRequest {
   journal_id: string;
   operations: EditOperation[];
-  sync_realtime_state?: boolean; // Whether to directly update the state of the journal to all connected users. WARNING: Operations through synced states CANNOT be undone, and will remove Ctrl+Z functionality for all users for the changes made.
+  sync_realtime_state?: boolean;
 }
 
 export interface OperationResultData {

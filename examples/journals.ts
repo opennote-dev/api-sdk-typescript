@@ -11,7 +11,8 @@ async function main() {
     console.log(SEPARATOR);
     console.log("Creating a new journal...");
     const createResponse = await client.journals.create({ 
-      title: "My New Journal" 
+      title: "My New Journal"
+      // team_slug: "your-team-slug" // Optional: specify team_slug for team journals
     });
     console.log("Create Journal Response:");
     console.log(JSON.stringify(createResponse, null, 4));

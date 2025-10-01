@@ -90,10 +90,11 @@ export class JournalEditor {
   constructor(private client: OpennoteClient) {}
 
   async importFromMarkdown(params: ImportFromMarkdownParams): Promise<ImportFromMarkdownResponse> {
-    const { markdown, title = "Imported Journal", extra_headers, extra_body } = params;
+    const { markdown, title = "Imported Journal", team_slug, extra_headers, extra_body } = params;
     const request: ImportFromMarkdownRequest = {
       markdown,
-      title
+      title,
+      team_slug
     };
 
     return this.client.request<ImportFromMarkdownResponse>(
@@ -161,9 +162,10 @@ export class Journals {
   }
 
   async create(params: CreateJournalParams): Promise<CreateJournalResponse> {
-    const { title, extra_headers, extra_body } = params;
+    const { title, team_slug, extra_headers, extra_body } = params;
     const request: CreateJournalRequest = {
-      title
+      title,
+      team_slug
     };
 
     return this.client.request<CreateJournalResponse>(

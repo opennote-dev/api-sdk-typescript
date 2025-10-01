@@ -30,6 +30,7 @@ export interface VideoStatusParams {
 export interface ImportFromMarkdownParams {
   markdown: string;
   title?: string;
+  team_slug?: string;
   extra_headers?: Record<string, string>;
   extra_body?: Record<string, any>;
 }
@@ -55,6 +56,7 @@ export interface DeleteJournalParams {
 // Journals Schemas
 export interface CreateJournalParams {
   title: string;
+  team_slug?: string;
   extra_headers?: Record<string, string>;
   extra_body?: Record<string, any>;
 }
