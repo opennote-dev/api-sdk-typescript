@@ -159,13 +159,15 @@ export class ImageBlock extends BaseBlock {
   alt?: string;
   width?: number;
   height?: number;
+  align?: string;
 
-  constructor(src: string, alt: string = "", width?: number, height?: number) {
+  constructor(src: string, alt: string = "", width?: number, height?: number, align: string = "center") {
     super();
     this.src = src;
     this.alt = alt;
     this.width = width;
     this.height = height;
+    this.align = align;
   }
 }
 
@@ -287,13 +289,13 @@ export class JournalLinkBlock extends BaseBlock {
 }
 
 export class AICompletionBlock extends BaseBlock {
-  old: string;
+  old?: string;
   new: string;
   complete: boolean;
 
-  constructor(old: string, newText: string, complete: boolean = false) {
+  constructor(old: string | undefined, newText: string, complete: boolean = false) {
     super();
-    this.old = old;
+    this.old = old || "";
     this.new = newText;
     this.complete = complete;
   }
