@@ -113,10 +113,24 @@ export function blockToNodeParams(block: BaseBlock): any[] {
   
   else if (block instanceof ImageBlock) {
     // image: (src: string, alt?: string, attrs?: Record<string, any>)
-    const params = [block.src];
+    const params: any[] = [block.src];
     if (block.alt !== undefined) {
       params.push(block.alt);
+    } else {
+      params.push("");
     }
+    // Add attrs with align, width, and height at index 2
+    const attrs: Record<string, any> = {};
+    if (block.align) {
+      attrs.align = block.align;
+    }
+    if (block.width !== undefined) {
+      attrs.width = block.width;
+    }
+    if (block.height !== undefined) {
+      attrs.height = block.height;
+    }
+    params.push(attrs);
     return params;
   }
   
